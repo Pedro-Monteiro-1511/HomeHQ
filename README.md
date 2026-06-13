@@ -44,6 +44,29 @@ HomeHQ allows house members to:
 - Optional profile images stored in Supabase Storage.
 - Public profile information separated from private account data.
 
+### House Invitations
+
+HomeHQ supports two invitation flows designed for different access scenarios:
+
+**Email invitations** are restricted to a specific recipient. The invitation is
+shown inside HomeHQ only to the authenticated user whose email matches it, where
+it can be accepted or rejected. Each house can have at most one active
+invitation for the same email, preventing duplicate requests and conflicting
+access states.
+
+**QR code invitations** generate a shareable invitation link for a house. The
+house manager defines how many people may use the invitation, allowing the same
+QR code to be shared with a controlled group without granting unlimited access.
+
+Both invitation types use unique codes and expiry dates. Expired, revoked or
+fully used invitations are no longer presented as valid. Acceptance is
+validated in the database, not only in the interface, to prevent bypassing the
+rules from the client.
+
+By default, a user may belong to only one house and must accept a valid
+invitation before joining another household. Privileged users can bypass this
+limit, leaving room for future administrative and support workflows.
+
 ### House Permissions
 
 Permissions are configured independently for each house section:
@@ -113,68 +136,6 @@ public/                      PWA icons and service worker
 The client is responsible for presentation and interaction. Data validation,
 authorization, invite rules and financial consolidation are enforced in the
 database.
-
-## Local Setup
-
-### Requirements
-
-- Node.js 20 or newer
-- npm
-- A Supabase project
-
-### Install dependencies
-
-```bash
-npm install
-```
-
-### Configure environment variables
-
-Create `.env.local` from `.env.example`:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-```
-
-Only use the public/publishable Supabase key in the frontend. Never expose the
-Supabase service role key.
-
-### Configure Supabase
-
-Open the Supabase SQL Editor and execute every file inside
-`supabase/migrations` in filename order.
-
-The migrations create:
-
-- profiles, houses and memberships;
-- bills, tasks, events and shopping;
-- debts and activity logs;
-- invitations and permission rules;
-- Row Level Security policies;
-- secure database functions.
-
-### Run the application
-
-```bash
-npm run dev
-```
-
-Open `http://localhost:3000`.
-
-### Production build
-
-```bash
-npm run build
-npm run start
-```
-
-## Installing as an App on iPhone
-
-1. Open the deployed HomeHQ URL in Safari.
-2. Select **Share**.
-3. Select **Add to Home Screen**.
-4. Open HomeHQ from the newly created icon.
 
 ## Database Changes
 
